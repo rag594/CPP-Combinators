@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <vector>
 #include <utility>
+#include <iterator>
+#include <type_traits>
+#include <set>
 
 using namespace std;
 
@@ -13,17 +16,19 @@ using namespace std;
 
 // map over the collection to produce a new collection
 template <typename InpCollection, typename OutCollection, typename unop>
-  OutCollection mapOver(InpCollection col, OutCollection& oCol, unop op) {
+  OutCollection _map(InpCollection col, OutCollection& oCol, unop op) {
   std::transform(col.begin(),col.end(),oCol.begin(),op);
   return oCol;
 }
 
 
 // convert sequence to (element, index) typically a pair in C++
-template <typename InpCollection, typename OutCollection>
-  OutCollection zipWithIndex(InpCollection col, OutCollection& oCol) {
+template <typename InputCollection>
+  auto _zipWithIndex(InputCollection col) -> std::vector<pair<typename InputCollection::value_type,int> > {
   auto colItr = col.begin();
-  std::transform(col.begin(),col.end(),oCol.begin(),[&](int& x) {
+  typedef typename InputCollection::value_type InpColType;
+  std::vector<pair<InpColType, int>> oCol(col.size());
+  std::transform(col.begin(),col.end(),oCol.begin(),[&](const InpColType& x) {
                         auto itr = colItr++;
                         size_t index = std::distance(col.begin(), itr);
                         return make_pair(x, index);  });
