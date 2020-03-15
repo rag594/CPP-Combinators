@@ -35,4 +35,22 @@ template <typename InputCollection>
   return oCol;
 }
 
+// filter the elements based on a Predicate
+template <typename InputCollection, typename Predicate>
+InputCollection _filter(InputCollection iCol, Predicate predicate) {
+  typedef typename InputCollection::value_type InpColType;
+  std::vector<InpColType> oCol;
+  std::copy_if(iCol.begin(),iCol.end(),std::back_inserter(oCol), predicate);
+  return oCol;
+}
+
+// filter the elements which does not satisfy the predicate
+template <typename InputCollection, typename Predicate>
+InputCollection _filterNot(InputCollection iCol, Predicate predicate) {
+  auto oCol = _filter(iCol, [predicate] (typename InputCollection::value_type i) {return !predicate(i);});
+  return oCol;
+}
+
+
+
 #endif
